@@ -56,8 +56,8 @@ class ArFixturesTest < Test::Unit::TestCase
   def test_should_use_erb
     Beer.delete_all
     
-    cp  File.join(RAILS_ROOT, 'fixtures', 'beers.yml'), 
-        File.join(RAILS_ROOT, 'db', 'data' 'beers.yml')
+    cp  File.join(RAILS_ROOT, 'fixtures', 'beers_erb.yml'), 
+        File.join(RAILS_ROOT, 'db', 'data', 'beers.yml')
     assert_equal 0, Beer.count
     Beer.load_from_file
     assert_equal 2, Beer.count    

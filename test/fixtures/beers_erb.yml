@@ -1,0 +1,13 @@
+--- 
+- !ruby/object:Beer 
+  attributes: 
+    name: stout
+    rating: 5
+    sipped_at: <%= Time.now %>
+    id: "1"
+- !ruby/object:Beer 
+  attributes: 
+    name: india pale ale
+    rating: 4
+    sipped_at: <%= Time.now - 60 %>
+    id: "2"
