@@ -45,7 +45,12 @@ namespace :db do
       desc "Dump all models to the db/data directory."
       task :all => :environment do
         all_models.each do |model|
-          model.dump_to_file(ENV['DUMP_PATH'])
+          begin
+            model.dump_to_file(ENV['DUMP_PATH'])
+          rescue => ex
+            puts "Failed to dump data for #{model} model."
+            puts ex
+          end
         end
       end
     end
