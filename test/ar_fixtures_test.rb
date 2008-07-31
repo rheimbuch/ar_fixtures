@@ -13,7 +13,7 @@ class ArFixturesTest < Test::Unit::TestCase
   include FileUtils
 
   def setup
-    %w(db test/fixtures).each { |dir| mkdir_p File.join(RAILS_ROOT, dir) }
+    %w(db/data test/fixtures).each { |dir| mkdir_p File.join(RAILS_ROOT, dir) }
   end
   
   def test_dump_to_file
@@ -21,7 +21,7 @@ class ArFixturesTest < Test::Unit::TestCase
     
     assert_equal 2, Beer.count
     Beer.dump_to_file
-    assert File.exist?(File.join(RAILS_ROOT, 'db', 'beers.yml'))
+    assert File.exist?(File.join(RAILS_ROOT, 'db', 'data', 'beers.yml'))
     
     Beer.destroy_all
     assert_equal 0, Beer.count
@@ -31,7 +31,7 @@ class ArFixturesTest < Test::Unit::TestCase
 
   def test_load_from_file
     cp  File.join(RAILS_ROOT, 'fixtures', 'glasses.yml'), 
-        File.join(RAILS_ROOT, 'db', 'glasses.yml')
+        File.join(RAILS_ROOT, 'db', 'data', 'glasses.yml')
     assert_equal 0, Glass.count
     Glass.load_from_file
     assert_equal 2, Glass.count
@@ -57,14 +57,14 @@ class ArFixturesTest < Test::Unit::TestCase
     Beer.delete_all
     
     cp  File.join(RAILS_ROOT, 'fixtures', 'beers.yml'), 
-        File.join(RAILS_ROOT, 'db', 'beers.yml')
+        File.join(RAILS_ROOT, 'db', 'data' 'beers.yml')
     assert_equal 0, Beer.count
     Beer.load_from_file
     assert_equal 2, Beer.count    
   end
 
   def teardown
-    %w(db test).each { |dir| rm_rf File.join(RAILS_ROOT, dir) }    
+    %w(db/data test).each { |dir| rm_rf File.join(RAILS_ROOT, dir) }    
   end
   
 end
