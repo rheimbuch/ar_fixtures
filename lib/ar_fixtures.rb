@@ -7,7 +7,12 @@ class ActiveRecord::Base
     
     # Generates the default path to which the model will be dumped as a yml fixture.
     def dump_path
-      File.join("db"," data", "#{table_name}.yml")
+      File.join(RAILS_ROOT, "db"," data")
+    end
+    
+    # Generates the full path to the yml dump file.
+    def dump_file
+      File.join(dump_path, "#{table_name}.yml")
     end
 
     # Writes content of this table to db/table_name.yml, or the specified file.
@@ -16,7 +21,7 @@ class ActiveRecord::Base
     def dump_to_file(path=nil, limit=nil)
       opts = {}
       opts[:limit] = limit if limit
-      path ||= dump_path
+      path ||= dump_file
       write_file(File.expand_path(path, RAILS_ROOT), self.find(:all, opts).to_yaml)
     end
 
@@ -25,7 +30,7 @@ class ActiveRecord::Base
     #
     # ERB tags are also possible, as with the rest of Rails fixtures.
     def load_from_file(path=nil)
-      path ||= dump_path
+      path ||= dump_file
 
       self.destroy_all
 
