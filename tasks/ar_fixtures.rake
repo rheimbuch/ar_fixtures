@@ -15,6 +15,16 @@ def limit_or_nil_string
   ENV['LIMIT'].blank? ? 'nil' : ENV['LIMIT']
 end
 
+def all_models
+  FileList[File.join(RAILS_ROOT, 'app', 'models', '**', '*.rb')].map do |path|
+    File.basename(path, ".rb").classify.constantize
+  end
+end
+
+def all_data_files
+  FileList[File.join(RAILS_ROOT, 'db', 'data', '**', '*.yml')]
+end
+
 namespace :db do
   namespace :fixtures do
     desc "Dump data to the test/fixtures/ directory. Use MODEL=ModelName and LIMIT (optional)"
@@ -33,6 +43,29 @@ namespace :db do
     desc "Load data from the db/data directory. Use MODEL=ModelName"
     task :load => :environment do
       eval "#{model_or_raise}.load_from_file"
+    end
+    
+    namespace :dump do
+      desc "Dump all models to the db/data directory."
+      task :all => :environment do
+        all_models.each do |model|
+          model.dump_to_file
+        end
+      end
+    end
+    
+    namespace :load do
+      desc "Load all data in yml dump files from the db/data directory."
+      task :all => :environment do
+        all_models.each do |model|
+          begin
+            model.load_from_file
+          rescue => ex
+            puts "Could not load data for #{model} model."
+            puts ex
+          end
+        end
+      end
     end
   end
 end
