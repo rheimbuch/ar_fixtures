@@ -36,6 +36,7 @@ namespace :db do
   namespace :data do
     desc "Dump data to the db/data directory. Use MODEL=ModelName and LIMIT (optional)"
     task :dump => :environment do
+      mkdir_p dump_path
       eval "#{model_or_raise}.dump_to_file(dump_path, #{limit_or_nil_string})"
       puts "#{model_or_raise} has been dumped to #{dump_path}"
     end
@@ -48,6 +49,7 @@ namespace :db do
     namespace :dump do
       desc "Dump all models to the db/data directory."
       task :all => :environment do
+        mkdir_p dump_path
         all_models.each do |model|
           begin
             model.dump_to_file(dump_path)
