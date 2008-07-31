@@ -21,10 +21,6 @@ def all_models
   end
 end
 
-def all_data_files
-  FileList[File.join(RAILS_ROOT, 'db', 'data', '**', '*.yml')]
-end
-
 namespace :db do
   namespace :fixtures do
     desc "Dump data to the test/fixtures/ directory. Use MODEL=ModelName and LIMIT (optional)"
@@ -49,7 +45,7 @@ namespace :db do
       desc "Dump all models to the db/data directory."
       task :all => :environment do
         all_models.each do |model|
-          model.dump_to_file
+          model.dump_to_file(ENV['DUMP_PATH'])
         end
       end
     end
@@ -59,7 +55,7 @@ namespace :db do
       task :all => :environment do
         all_models.each do |model|
           begin
-            model.load_from_file
+            model.load_from_file(ENV['DUMP_PATH'])
           rescue => ex
             puts "Could not load data for #{model} model."
             puts ex

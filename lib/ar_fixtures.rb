@@ -11,8 +11,8 @@ class ActiveRecord::Base
     end
     
     # Generates the full path to the yml dump file.
-    def dump_file
-      File.join(dump_path, "#{table_name}.yml")
+    def dump_file(path=nil)
+      File.join((path || dump_path), "#{table_name}.yml")
     end
 
     # Writes content of this table to db/table_name.yml, or the specified file.
@@ -21,7 +21,7 @@ class ActiveRecord::Base
     def dump_to_file(path=nil, limit=nil)
       opts = {}
       opts[:limit] = limit if limit
-      path ||= dump_file
+      path ||= dump_file(path)
       write_file(File.expand_path(path, RAILS_ROOT), self.find(:all, opts).to_yaml)
     end
 
@@ -30,7 +30,7 @@ class ActiveRecord::Base
     #
     # ERB tags are also possible, as with the rest of Rails fixtures.
     def load_from_file(path=nil)
-      path ||= dump_file
+      path ||= dump_file(path)
 
       self.destroy_all
 
