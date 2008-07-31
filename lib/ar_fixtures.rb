@@ -7,7 +7,7 @@ class ActiveRecord::Base
     
     # Generates the default path to which the model will be dumped as a yml fixture.
     def dump_path
-      File.join(RAILS_ROOT, "db"," data")
+      File.join(RAILS_ROOT, "db", "data")
     end
     
     # Generates the full path to the yml dump file.
