@@ -21,6 +21,10 @@ def all_models
   end
 end
 
+def dump_path
+  ENV['DUMP_PATH'] || ActiveRecord::Base.dump_path
+end
+
 namespace :db do
   namespace :fixtures do
     desc "Dump data to the test/fixtures/ directory. Use MODEL=ModelName and LIMIT (optional)"
@@ -32,13 +36,13 @@ namespace :db do
   namespace :data do
     desc "Dump data to the db/data directory. Use MODEL=ModelName and LIMIT (optional)"
     task :dump => :environment do
-      eval "#{model_or_raise}.dump_to_file(ENV['DUMP_PATH'], #{limit_or_nil_string})"
-      puts "#{model_or_raise} has been dumped to the db folder."
+      eval "#{model_or_raise}.dump_to_file(dump_path, #{limit_or_nil_string})"
+      puts "#{model_or_raise} has been dumped to #{dump_path}"
     end
 
     desc "Load data from the db/data directory. Use MODEL=ModelName"
     task :load => :environment do
-      eval "#{model_or_raise}.load_from_file(ENV['DUMP_PATH'˝])"
+      eval "#{model_or_raise}.load_from_file(dump_path)"
     end
     
     namespace :dump do
@@ -46,7 +50,8 @@ namespace :db do
       task :all => :environment do
         all_models.each do |model|
           begin
-            model.dump_to_file(ENV['DUMP_PATH'])
+            model.dump_to_file(dump_path)
+            puts "#{model} has been dumped to #{dump_path}"
           rescue => ex
             puts "Failed to dump data for #{model} model."
             puts ex
@@ -60,7 +65,7 @@ namespace :db do
       task :all => :environment do
         all_models.each do |model|
           begin
-            model.load_from_file(ENV['DUMP_PATH'])
+            model.load_from_file(dump_path)
           rescue => ex
             puts "Could not load data for #{model} model."
             puts ex
